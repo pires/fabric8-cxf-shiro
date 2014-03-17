@@ -1,0 +1,13 @@
+target
+build
+test-output
+gen
+
+# Idea
+.iml
+.idea
+
+# Eclipse
+.settings
+.classpath
+.project
