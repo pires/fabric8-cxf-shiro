@@ -12,6 +12,7 @@
  */
 package com.github.pires.example.auth;
 
+import java.util.Map;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.UnauthenticatedException;
 
@@ -36,6 +37,6 @@ public interface AuthenticationService {
 
   public String getUsername(String token);
 
-  public int countTokens();
+  public Map<String, String> getTokens();
 
 }

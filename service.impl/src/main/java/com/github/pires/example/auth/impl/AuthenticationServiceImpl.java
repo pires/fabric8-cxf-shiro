@@ -42,8 +42,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     return tokens.get(token);
   }
 
-  public int countTokens() {
-    return tokens.size();
+  public Map<String, String> getTokens() {
+    return tokens;
   }
 
 }
