@@ -35,6 +35,7 @@
     </jaxrs:features>
     <jaxrs:providers>
       <bean class="com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider" />
+      <bean class="com.github.pires.example.mapper.ShiroExceptionMapper" />
       <bean class="com.github.pires.example.filter.SecurityFeatureProvider">
         <property name="authService">
           <reference
