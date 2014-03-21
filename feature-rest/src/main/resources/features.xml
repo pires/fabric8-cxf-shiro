@@ -26,15 +26,10 @@
     <feature>swagger</feature>
     <feature>cxf-jaxrs</feature>
     <feature>shiro-core</feature>
-    <feature>shiro-ehcache</feature>
 
     <bundle dependency='true'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.aspectj/1.7.4_1
     </bundle>
     <bundle>mvn:org.apache.shiro/shiro-aspectj/${shiro.version}</bundle>
-
-    <bundle dependency='true'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.ehcache/2.6.6_1
-    </bundle>
-    <bundle>mvn:org.apache.shiro/shiro-ehcache/${shiro.version}</bundle>
     
     <bundle>mvn:com.fasterxml.jackson.core/jackson-core/${jackson.version}</bundle>
     <bundle>mvn:com.fasterxml.jackson.core/jackson-annotations/${jackson.version}</bundle>
