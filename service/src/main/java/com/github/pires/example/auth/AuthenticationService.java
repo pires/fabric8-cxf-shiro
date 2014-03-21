@@ -38,5 +38,10 @@ public interface AuthenticationService {
   public String getUsername(String token);
 
   public Map<String, String> getTokens();
+  /**
+   * Not a beautiful way to initialize the necessary database scenario, but who
+   * cares?
+   */
+  public void initializeTestScenario();
 
 }

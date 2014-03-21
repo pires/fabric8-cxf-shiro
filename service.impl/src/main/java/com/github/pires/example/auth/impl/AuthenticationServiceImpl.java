@@ -13,10 +13,12 @@
 package com.github.pires.example.auth.impl;
 
 import com.github.pires.example.auth.AuthenticationService;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import com.github.pires.example.daos.RoleDao;
+import com.github.pires.example.daos.UserDao;
+import com.github.pires.example.entities.Role;
+import com.github.pires.example.entities.User;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.authc.credential.HashingPasswordService;
 import org.apache.shiro.authz.UnauthenticatedException;
 
 /**
@@ -25,7 +27,10 @@ import org.apache.shiro.authz.UnauthenticatedException;
 public class AuthenticationServiceImpl implements AuthenticationService {
 
   private Map<String, String> tokens = new HashMap<>();
+  private RoleDao roleDao;
+  private UserDao userDao;
 
+  private HashingPasswordService passwordService;
   public String login(final UsernamePasswordToken credentials)
       throws UnauthenticatedException {
     // TODO authenticate somewhere
@@ -40,10 +45,62 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
   public String getUsername(final String token) {
     return tokens.get(token);
+  public void initializeTestScenario() {
+    // create roles
+    Role role1 = new Role();
+    role1.setRoleName("ADMIN");
+    role1.setDescription("Administrative user role");
+    roleDao.persist(role1);
+
+    Role role2 = new Role();
+    role2.setRoleName("REGULAR");
+    role2.setDescription("Regular user role");
+    roleDao.persist(role2);
+
+    // create administrative user
+    User adminUser = new User();
+    adminUser.setEmail("admin@example.com");
+    // clear password
+    final char[] pwd1 = { '1', '2', '3' };
+    // hash password
+    final String adminUserPassword = passwordService.encryptPassword(pwd1);
+    adminUser.setPassword(adminUserPassword.toCharArray());
+    userDao.persist(adminUser);
+
+    // create regular user
+    User regularUser = new User();
+    regularUser.setEmail("regular@example.com");
+    // clear password
+    final char[] pwd2 = { '4', '5', '6' };
+    // hash password
+    final String regularUserPassword = passwordService.encryptPassword(pwd2);
+    regularUser.setPassword(regularUserPassword.toCharArray());
+    userDao.persist(regularUser);
+  }
+
+  public RoleDao getRoleDao() {
+    return roleDao;
+  }
+
+  public void setRoleDao(RoleDao roleDao) {
+    this.roleDao = roleDao;
+  }
+
+  public UserDao getUserDao() {
+    return userDao;
+  }
+
+  public void setUserDao(UserDao userDao) {
+    this.userDao = userDao;
+  }
+  public HashingPasswordService getPasswordService() {
+    return passwordService;
   }
 
   public Map<String, String> getTokens() {
     return tokens;
+  public void setPasswordService(HashingPasswordService passwordService) {
+    this.passwordService = passwordService;
   }
 
 }

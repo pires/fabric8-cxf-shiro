@@ -31,12 +31,29 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-jpa_2.0_spec</artifactId>
+      <version>1.1</version>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
 
   <properties>
-    <osgi.import.pkg>*</osgi.import.pkg>
+    <osgi.import.pkg>
+      org.hibernate.proxy,
+      javassist.util.proxy,
+      org.apache.shiro.session.mgt,
+      *
+    </osgi.import.pkg>
     <osgi.export.pkg></osgi.export.pkg>
-    <osgi.private.pkg>com.github.pires.example.auth.impl</osgi.private.pkg>
+    <osgi.private.pkg>
+      com.github.pires.example.auth.impl,
+      com.github.pires.example.daos,
+      com.github.pires.example.entities,
+      com.github.pires.example.shiro
+    </osgi.private.pkg>
+    <osgi.meta.persistence>META-INF/persistence.xml</osgi.meta.persistence>
   </properties>
 
 </project>

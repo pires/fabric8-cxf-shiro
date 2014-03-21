@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed under the Apache License, Version 2.0 (the "License"); you may not
+    use this file except in compliance with the License. You may obtain a copy of
+    the License at
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+    License for the specific language governing permissions and limitations under
+    the License.
+
+-->
+<blueprint
+  xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+  xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:jpa="http://aries.apache.org/xmlns/jpa/v1.0.0"
+  xmlns:tx="http://aries.apache.org/xmlns/transactions/v1.0.0"
+  xmlns:cxf="http://cxf.apache.org/blueprint/core"
+  xsi:schemaLocation="
+      http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+      http://cxf.apache.org/blueprint/core http://cxf.apache.org/schemas/blueprint/core.xsd">
+
+  <!-- This gets the container-managed EntityManager and injects it into the DAO beans. -->
+  <bean
+    id="roleDao"
+    class="com.github.pires.example.daos.RoleDao"
+    activation="eager">
+    <jpa:context
+      unitname="PU"
+      property="entityManager" />
+    <tx:transaction
+      method="*"
+      value="Required" />
+  </bean>
+  <bean
+    id="userDao"
+    class="com.github.pires.example.daos.UserDao"
+    activation="eager">
+    <jpa:context
+      unitname="PU"
+      property="entityManager" />
+    <tx:transaction
+      method="*"
+      value="Required" />
+  </bean>
+  
+  <!-- Password handling facilities -->
+  <bean id="passwordService" class="org.apache.shiro.authc.credential.DefaultPasswordService" />
+  <bean id="passwordMatcher" class="org.apache.shiro.authc.credential.PasswordMatcher">
+    <property name="passwordService" ref="passwordService" />
+  </bean>
+
+  <bean id="realm" class="com.github.pires.example.shiro.SMRealm">
+    <property name="authenticationQuery" value="SELECT password FROM USERS WHERE email = ?" />
+    <property name="permissionsLookupEnabled" value="true" />
+    <property name="dataSource">
+      <reference interface="javax.sql.DataSource" filter="(osgi.jndi.service.name=jdbc/hsqlds)" availability="mandatory" />
+    </property>
+    <property name="credentialsMatcher" ref="passwordMatcher" />
+    <property name="authenticationCachingEnabled" value="false" />
+  </bean>
+
+  <bean
+    id="sessionDao"
+    class="com.github.pires.example.shiro.HazelcastSessionDao" destroy-method="destroy">
+    <!--<property
+    name="activeSessionsCacheName"
+    value="shiro-activeSessionCache" />-->
+  </bean>
+
+  <!--  <bean
+    id="ehCacheMgr"
+    class="org.apache.shiro.cache.ehcache.EhCacheManager"
+    destroy-method="destroy">
+    <property
+      name="cacheManagerConfigFile"
+      value="ehcache.xml" />
+  </bean>-->
+
+  <bean
+    id="securityManager"
+    class="org.apache.shiro.mgt.DefaultSecurityManager">
+    <property name="realm" ref="realm" />
+    <property name="sessionManager.sessionDAO" ref="sessionDao" />
+    <!--  <property
+    name="cacheManager"
+    ref="ehCacheMgr" />-->
+  </bean>
+
+  <bean id="authService" class="com.github.pires.example.auth.impl.AuthenticationServiceImpl" activation="eager">
+    <property name="roleDao" ref="roleDao" />
+    <property name="userDao" ref="userDao" />
+    <property name="securityManager" ref="securityManager" />
+    <property name="passwordService" ref="passwordService" />
+  </bean>
+  
+  <service
+    ref="authService"
+    interface="com.github.pires.example.auth.AuthenticationService" />
+
+</blueprint>
