@@ -1,7 +1,13 @@
-fabric8-persistence-demo
+fabric8-cxf-shiro
 ======================
 
-Fabric8 + E-OSGi managed persistence (Aries + Hibernate) + REST service demonstration code.
+This example project is comprehended by the following:
+* HSQLDB in-memory datasource
+* Aries (JPA 1.1) + Hibernate (4.2.11) powered persistence
+* Shiro-based tailored session-management OSGi service
+* Hazelcast (2.6) powered session distributed persistence
+* JAX-RS (2.0) filters to deal with HTTP requests and map them to Shiro sessions (maintained by the aforementioned OSGi service)
+* CXF endpoint to test them all
 
 # Pre-requisites
 
@@ -63,8 +69,13 @@ fabric:create --clean --wait-for-provisioning
 ## Define our own profile
 ```
 profile-create --parents feature-dosgi cxf-shiro-example
+profile-edit --repositories mvn:org.apache.karaf.cellar/apache-karaf-cellar/2.3.2/xml/features cxf-shiro-example
+profile-edit --repositories mvn:com.github.pires.example/feature-persistence/0.1-SNAPSHOT/xml/features cxf-shiro-example
 profile-edit --repositories mvn:com.github.pires.example/feature-rest/0.1-SNAPSHOT/xml/features cxf-shiro-example
+profile-edit --features hazelcast cxf-shiro-example
+profile-edit --features persistence-aries-hibernate cxf-shiro-example
 profile-edit --features cxf-shiro cxf-shiro-example
+profile-edit --bundles mvn:com.github.pires.example/datasource-hsqldb/0.1-SNAPSHOT cxf-shiro-example
 profile-edit --bundles mvn:com.github.pires.example/service/0.1-SNAPSHOT cxf-shiro-example
 profile-edit --bundles mvn:com.github.pires.example/service-impl/0.1-SNAPSHOT cxf-shiro-example
 profile-edit --bundles mvn:com.github.pires.example/cxf-shiro/0.1-SNAPSHOT cxf-shiro-example
@@ -82,13 +93,32 @@ In Hawt.io UI, go to ```API``` tab (in the parent container), check the host and
 
 ## REST API (JSON)
 
-Login
+### Initialize scenario
+
+```
+PUT /demo/auth
+```
+
+### Login
+
 ```
 POST /demo/auth
 
 Example JSON:
 {
-  "username":"pires",
+  "username":"admin@example.com",
   "password":["1","2","3"]
 }
 ```
+
+Check the response headers and write down _be-token_, for usage in authenticated requests.
+
+### View profile
+
+Set _be-token_ header to the value you've written before.
+
+```
+GET /demo/auth
+```
+
+You should see _admin@example.com_ in the response body.
