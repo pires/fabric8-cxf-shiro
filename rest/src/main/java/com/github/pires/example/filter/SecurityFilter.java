@@ -30,7 +30,7 @@ public class SecurityFilter implements ContainerRequestFilter,
 
   private static final String tokenHeader = "be-token";
 
-  private AuthenticationService authService;
+  private final AuthenticationService authService;
 
   public SecurityFilter(AuthenticationService authService) {
     this.authService = authService;

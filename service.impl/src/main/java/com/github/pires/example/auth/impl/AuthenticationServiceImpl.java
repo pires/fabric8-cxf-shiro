@@ -20,31 +20,39 @@ import com.github.pires.example.entities.User;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authc.credential.HashingPasswordService;
 import org.apache.shiro.authz.UnauthenticatedException;
+import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.subject.Subject;
 
 /**
  * Implementation of {@link AuthenticationService}.
  */
 public class AuthenticationServiceImpl implements AuthenticationService {
 
-  private Map<String, String> tokens = new HashMap<>();
   private RoleDao roleDao;
   private UserDao userDao;
 
+  private SecurityManager securityManager;
   private HashingPasswordService passwordService;
+
   public String login(final UsernamePasswordToken credentials)
       throws UnauthenticatedException {
-    // TODO authenticate somewhere
-    final String token = UUID.randomUUID().toString();
-    tokens.put(token, credentials.getUsername());
-    return token;
+    Subject newSubject = new Subject.Builder(securityManager).buildSubject();
+    newSubject.login(credentials);
+    return newSubject.getSession().getId().toString();
   }
 
   public boolean isAuthenticated(final String token) {
-    return tokens.containsKey(token);
+    Subject requestSubject = new Subject.Builder(securityManager).sessionId(
+        token).buildSubject();
+    return requestSubject.isAuthenticated();
   }
 
   public String getUsername(final String token) {
-    return tokens.get(token);
+    Subject requestSubject = new Subject.Builder(securityManager).sessionId(
+        token).buildSubject();
+    return requestSubject.getPrincipal().toString();
+  }
+
   public void initializeTestScenario() {
     // create roles
     Role role1 = new Role();
@@ -93,12 +101,19 @@ public class AuthenticationServiceImpl implements AuthenticationService {
   public void setUserDao(UserDao userDao) {
     this.userDao = userDao;
   }
+
+  public SecurityManager getSecurityManager() {
+    return securityManager;
+  }
+
+  public void setSecurityManager(SecurityManager securityManager) {
+    this.securityManager = securityManager;
+  }
+
   public HashingPasswordService getPasswordService() {
     return passwordService;
   }
 
-  public Map<String, String> getTokens() {
-    return tokens;
   public void setPasswordService(HashingPasswordService passwordService) {
     this.passwordService = passwordService;
   }

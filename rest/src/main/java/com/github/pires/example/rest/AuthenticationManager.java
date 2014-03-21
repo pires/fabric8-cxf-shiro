@@ -62,7 +62,6 @@ public class AuthenticationManager {
   @Produces(MediaType.APPLICATION_JSON)
   @RequiresAuthentication
   public Response viewMyProfile(@HeaderParam("be-token") final String token) {
-    log.info("Is authenticated?: {}", authService.isAuthenticated(token));
     return Response.ok(authService.getUsername(token)).build();
   }
 
