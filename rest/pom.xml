@@ -38,8 +38,11 @@
   </dependencies>
 
   <properties>
-    <osgi.import.pkg>*</osgi.import.pkg>
-    <osgi.export.pkg>com.github.pires.example.filter</osgi.export.pkg>
+    <osgi.import.pkg>
+      org.apache.shiro.session.mgt,
+      org.apache.shiro.subject,
+      *
+    </osgi.import.pkg>
     <osgi.export.pkg>com.github.pires.example.filter,com.github.pires.example.mapper</osgi.export.pkg>
     <osgi.private.pkg>com.github.pires.example.rest</osgi.private.pkg>
   </properties>
