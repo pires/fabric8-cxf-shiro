@@ -14,7 +14,7 @@ package com.github.pires.example.shiro;
 
 import com.hazelcast.config.Config;
 import com.hazelcast.config.GroupConfig;
-import com.hazelcast.config.Join;
+import com.hazelcast.config.JoinConfig;
 import com.hazelcast.config.MulticastConfig;
 import com.hazelcast.config.NetworkConfig;
 import com.hazelcast.config.SSLConfig;
@@ -72,7 +72,7 @@ public class HazelcastSessionDao extends AbstractSessionDAO {
     TcpIpConfig tcpCfg = new TcpIpConfig();
     tcpCfg.setEnabled(false);
     // network join configuration
-    Join joinCfg = new Join();
+    JoinConfig joinCfg = new JoinConfig();
     joinCfg.setMulticastConfig(mcCfg);
     joinCfg.setTcpIpConfig(tcpCfg);
     netCfg.setJoin(joinCfg);
@@ -89,7 +89,7 @@ public class HazelcastSessionDao extends AbstractSessionDAO {
   protected Serializable doCreate(Session session) {
     final Serializable sessionId = generateSessionId(session);
     assignSessionId(session, sessionId);
-    map.put(session.getId(), session);
+    map.set(session.getId(), session);
     return sessionId;
   }
 

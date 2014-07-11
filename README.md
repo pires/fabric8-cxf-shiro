@@ -3,9 +3,9 @@ fabric8-cxf-shiro
 
 This example project is comprehended by the following:
 * HSQLDB in-memory datasource
-* Aries (JPA 1.1) + Hibernate (4.2.11) powered persistence
+* Aries (JPA 1.1) + Hibernate (4.2.12) powered persistence
 * Shiro-based tailored session-management OSGi service
-* Hazelcast (2.6) powered session distributed persistence
+* Hazelcast (3.2) powered session distributed persistence
 * JAX-RS (2.0) filters to deal with HTTP requests and map them to Shiro sessions (maintained by the aforementioned OSGi service)
 * CXF endpoint to test them all
 
@@ -25,13 +25,12 @@ mvn clean install
 ## Installation and initial configuration
 
 * Download [latest build](https://repository.jboss.org/nexus/content/repositories/ea/io/fabric8/fabric8-karaf/) for ```fabric-karaf``` and extract it.
-*(tested on fabric8-karaf-1.0.0.redhat-362)*
-* Extract it
-* ```cd``` to the newly extracted folder
-* Define default administrative user (login: **admin**, password:**admin**) by uncommenting the last line of ```etc/users.properties```
+*(tested on fabric8-karaf-1.1.0.CR1)*
 * Start Fabric
 ```no-highlight
+cd <FABRIC8_PATH>
 bin/fusefabric
+
 ```
 
 If everything goes well, you should get a Fabric shell that looks like this:
@@ -46,7 +45,7 @@ ______    _          _      _____
 |  _/ _` | '_ \| '__| |/ __|/ _ \
 | || (_| | |_) | |  | | (__| |_| |
 \_| \__,_|_.__/|_|  |_|\___\_____/
-  Fabric8 Container (1.0.0.redhat-362)
+  Fabric8 Container (1.1.0.CR1)
   http://fabric8.io/
 
 Type 'help' to get started
@@ -69,16 +68,16 @@ fabric:create --clean --wait-for-provisioning
 ## Define our own profile
 ```
 profile-create --parents feature-dosgi cxf-shiro-example
-profile-edit --repositories mvn:org.apache.karaf.cellar/apache-karaf-cellar/2.3.2/xml/features cxf-shiro-example
-profile-edit --repositories mvn:com.github.pires.example/feature-persistence/0.1-SNAPSHOT/xml/features cxf-shiro-example
-profile-edit --repositories mvn:com.github.pires.example/feature-rest/0.1-SNAPSHOT/xml/features cxf-shiro-example
+profile-edit --repositories mvn:com.github.pires.example/feature-hazelcast/0.2-SNAPSHOT/xml/features cxf-shiro-example
+profile-edit --repositories mvn:com.github.pires.example/feature-persistence/0.2-SNAPSHOT/xml/features cxf-shiro-example
+profile-edit --repositories mvn:com.github.pires.example/feature-rest/0.2-SNAPSHOT/xml/features cxf-shiro-example
 profile-edit --features hazelcast cxf-shiro-example
 profile-edit --features persistence-aries-hibernate cxf-shiro-example
 profile-edit --features cxf-shiro cxf-shiro-example
-profile-edit --bundles mvn:com.github.pires.example/datasource-hsqldb/0.1-SNAPSHOT cxf-shiro-example
-profile-edit --bundles mvn:com.github.pires.example/service/0.1-SNAPSHOT cxf-shiro-example
-profile-edit --bundles mvn:com.github.pires.example/service-impl/0.1-SNAPSHOT cxf-shiro-example
-profile-edit --bundles mvn:com.github.pires.example/cxf-shiro/0.1-SNAPSHOT cxf-shiro-example
+profile-edit --bundles mvn:com.github.pires.example/datasource-hsqldb/0.2-SNAPSHOT cxf-shiro-example
+profile-edit --bundles mvn:com.github.pires.example/service/0.2-SNAPSHOT cxf-shiro-example
+profile-edit --bundles mvn:com.github.pires.example/service-impl/0.2-SNAPSHOT cxf-shiro-example
+profile-edit --bundles mvn:com.github.pires.example/cxf-shiro/0.2-SNAPSHOT cxf-shiro-example
 ```
 
 ## Create and run new container with newly created profile
@@ -102,7 +101,7 @@ PUT /demo/auth
 ### Login
 
 ```
-POST /demo/auth
+POST /demo/auth (Content-Type: application/json)
 
 Example JSON:
 {

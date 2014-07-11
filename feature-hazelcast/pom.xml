@@ -10,9 +10,9 @@
     <version>0.2-SNAPSHOT</version>
   </parent>
 
-  <artifactId>feature-persistence</artifactId>
+  <artifactId>feature-hazelcast</artifactId>
   <packaging>pom</packaging>
-  <name>Fabric8 Hibernate Feature</name>
+  <name>Fabric8 Hazelcast Feature</name>
 
   <build>
     <plugins>
