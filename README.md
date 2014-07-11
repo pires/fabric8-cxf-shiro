@@ -28,7 +28,7 @@ mvn clean install
 *(tested on fabric8-karaf-1.0.0.redhat-362)*
 * Extract it
 * ```cd``` to the newly extracted folder
-* Define default administrative user (login: **admin**, password:**admin**) by uncommenting the last line of ```etc/user.properties```
+* Define default administrative user (login: **admin**, password:**admin**) by uncommenting the last line of ```etc/users.properties```
 * Start Fabric
 ```no-highlight
 bin/fusefabric
